@@ -14,8 +14,8 @@ Status: built for Claude Code, Codex and Antigravity (`vendors/claude-code.json`
 | https://github.com/Riztazz/opovi-codex | the Codex plugin |
 | https://github.com/Riztazz/opovi-antigravity | the Antigravity plugin |
 
-The local folders sit side by side as `opovi-agent-kit`, `opovi-claude-code`, `opovi-codex` and `opovi-antigravity`,
-the names the vendor files' `repository` field reads.
+Each vendor file names its GitHub repository (`Riztazz/opovi-claude`, `Riztazz/opovi-codex`, `Riztazz/opovi-antigravity`),
+and a local, git-ignored `plugins.local.json` maps each vendor to where its clone lives on this PC.
 
 ## What the plugins do
 
@@ -39,8 +39,9 @@ commands/<name>.md          one procedure per command, the same words for every 
 fragments/<name>.md         the parts several commands share: rules, preflight, claim, serve, refusals
 schema/opovi.schema.json    the world folder's opovi.json
 contract.md                 the endpoint, the four MCP tools, the sign-in header and every refusal a command handles
-vendors/<vendor>.json       how one vendor names a command, a tool and an argument, and where its plugin lives
-sync.py                     writes the kit into each vendor's plugin repository beside this one
+vendors/<vendor>.json       how one vendor names a command, a tool and an argument, and its GitHub repository
+plugins.local.json          git-ignored map of vendor to local clone path (absolute or kit-relative)
+sync.py                     writes the kit into each vendor's clone, checking its git origin URL
 tests/test_sync.py          the tests of sync.py
 VERSION                     the kit's version, stamped into each plugin as KIT_VERSION and sent to claim as kitVersion
 ```
@@ -76,8 +77,8 @@ fragment and an include cycle.
 
 ## A vendor file
 
-`vendors/<vendor>.json` holds `vendor` (the `opovi.json` value), `agent` (its display name), `repository` (the plugin
-repository, relative to this folder), `skillsDir` (as Opowi's `harness-files.ts` writes it), `commandFile` and
+`vendors/<vendor>.json` holds `vendor` (the `opovi.json` value), `agent` (its display name), `repository` (the GitHub
+repository as `owner/name`), `skillsDir` (as Opowi's `harness-files.ts` writes it), `commandFile` and
 `commandName` (with `{name}`), `toolMention` and `toolGrant` (with `{tool}`), `toolSeparator`, `arguments`,
 `configure`, `update`, `frontmatter` (the header each command file gets: `key`, a `value` with `{description}`,
 `{argument-hint}` or `{tools}`, and `quoted`; an entry whose field a command lacks is left out), `versionFile`, and
@@ -93,12 +94,19 @@ From this folder, with Python 3.10 or later and nothing else installed:
 py -3 sync.py                     write every vendor's plugin
 py -3 sync.py --check             write nothing; exit 1 when a plugin differs from what the kit makes
 py -3 sync.py --vendor claude-code
+py -3 sync.py --plugin claude-code=/path/to/clone
 py -3 -B -m unittest discover -s tests -v
 ```
 
+`sync.py` finds each vendor's clone in `plugins.local.json` (`{ "<vendor>": "<path>" }`). When a vendor has no entry,
+an interactive run asks once (offering a sibling folder named like the repository as its default) and saves the answer;
+`--check` and non-terminal runs ask nothing, exit 2, and print the line to add. Every run checks each folder's git
+`origin` URL against the vendor's `repository` field and refuses a mismatch with exit 2. Use `--plugin <vendor>=<path>`
+to override one vendor for a single run without saving.
+
 `sync.py` writes LF only and leaves a command file the kit no longer makes in place, naming it as stale, for a person
-to remove. Exit codes: 0 done or clean, 1 drift or a stale file, 2 a kit or setup error such as a missing plugin
-repository.
+to remove. Exit codes: 0 done or clean, 1 drift or a stale file, 2 a kit or setup error such as a missing or mismatched
+plugin repository.
 
 ## The world folder
 
@@ -135,7 +143,7 @@ The four repositories share one version, `VERSION` here, and each release is a t
 server tells a person once per version that a newer plugin is out, so a change that reaches no plugin's files needs no
 release.
 
-1. Change the kit, run `py -3 sync.py`, then `py -3 sync.py --check` and the tests. Both clean.
+1. Change the kit, run `py -3 sync.py` (using `plugins.local.json` to reach each clone), then `py -3 sync.py --check` and the tests. Both clean.
 2. Raise `VERSION` (semver, below 1.0): the patch for wording an agent reads, the minor for a change in what a command
    sends or reads, a new field or tool among them. Run `py -3 sync.py` again: it writes `KIT_VERSION` and each
    manifest's version.

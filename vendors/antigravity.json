@@ -1,7 +1,7 @@
 {
   "vendor": "antigravity",
   "agent": "Antigravity",
-  "repository": "../opovi-antigravity",
+  "repository": "Riztazz/opovi-antigravity",
   "skillsDir": ".agents/skills",
   "commandFile": "skills/opovi-{name}/SKILL.md",
   "commandName": "/opovi-{name}",

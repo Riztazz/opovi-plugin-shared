@@ -1,7 +1,7 @@
 {
   "vendor": "claude-code",
   "agent": "Claude Code",
-  "repository": "../opovi-claude-code",
+  "repository": "Riztazz/opovi-claude",
   "skillsDir": ".claude/skills",
   "commandFile": "commands/{name}.md",
   "commandName": "/opovi:{name}",

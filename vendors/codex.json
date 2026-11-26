@@ -1,7 +1,7 @@
 {
   "vendor": "codex",
   "agent": "Codex",
-  "repository": "../opovi-codex",
+  "repository": "Riztazz/opovi-codex",
   "skillsDir": ".agents/skills",
   "commandFile": "skills/{name}/SKILL.md",
   "commandName": "${name}",

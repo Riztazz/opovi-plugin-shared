@@ -4,11 +4,15 @@ Run from the kit's folder: py -3 -m unittest discover -s tests -v
 """
 
 import json
+import re
 import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
+from io import StringIO
 from pathlib import Path
+from unittest import mock
 
 KIT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(KIT))
@@ -32,7 +36,7 @@ def small_kit(root: Path, command: str, fragment: str = "Fragment text.\n") -> t
     vendor = {
         "vendor": "test-agent",
         "agent": "Test Agent",
-        "repository": "../plugin",
+        "repository": "example/plugin",
         "skillsDir": ".test/skills",
         "commandFile": "commands/{name}.md",
         "commandName": "/t:{name}",
@@ -51,6 +55,8 @@ def small_kit(root: Path, command: str, fragment: str = "Fragment text.\n") -> t
         "manifest": {"path": "manifest.json", "versionKey": "version"},
     }
     (kit / "vendors" / "test-agent.json").write_text(json.dumps(vendor), encoding="utf-8")
+    (kit / "plugins.local.json").write_text(json.dumps({"test-agent": "../plugin"}), encoding="utf-8")
+    init_git_repo(repo, "https://github.com/example/plugin.git")
     (repo / "manifest.json").write_text('{\n  "name": "t",\n  "version": "0.0.0"\n}\n', encoding="utf-8")
     return kit, repo
 
@@ -123,6 +129,16 @@ class TheRealKitRendersWhole(unittest.TestCase):
                     text,
                     f"{name}'s {path} sends no vendor argument on tool calls",
                 )
+
+    def test_every_vendor_file_names_a_github_repository_and_no_local_path(self):
+        for name in sync.vendor_names(KIT):
+            vendor = sync.load_vendor(KIT, name)
+            repo_spec = vendor["repository"]
+            self.assertRegex(
+                repo_spec,
+                r"^[A-Za-z0-9][A-Za-z0-9-]*/[A-Za-z0-9_.-]+$",
+                f"{name}'s repository field is an owner/name GitHub slug, not a local path: {repo_spec!r}",
+            )
 
 
 class TheRenderRefuses(unittest.TestCase):
@@ -217,6 +233,81 @@ class CheckSeesDrift(unittest.TestCase):
     def test_a_missing_plugin_repository_is_an_error_not_a_skip(self):
         shutil.rmtree(self.repo)
         self.assertEqual(sync.main(["--kit", str(self.kit)]), 2, "a vendor whose repository is absent exits 2")
+
+
+def init_git_repo(path: Path, origin: str) -> None:
+    path.mkdir(parents=True, exist_ok=True)
+    subprocess.run(["git", "init", str(path)], check=True, capture_output=True)
+    subprocess.run(["git", "-C", str(path), "remote", "add", "origin", origin], check=True, capture_output=True)
+
+
+class CloneResolution(unittest.TestCase):
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.kit, self.repo = small_kit(self.root, GOOD)
+        (self.kit / "plugins.local.json").unlink()
+        vendor_path = self.kit / "vendors" / "test-agent.json"
+        vendor = json.loads(vendor_path.read_text(encoding="utf-8"))
+        vendor["repository"] = "example/my-plugin"
+        vendor_path.write_text(json.dumps(vendor), encoding="utf-8")
+        subprocess.run(["git", "-C", str(self.repo), "remote", "set-url", "origin", "https://github.com/example/my-plugin.git"], check=True, capture_output=True)
+
+    def tearDown(self):
+        shutil.rmtree(self.root)
+
+    def test_missing_entry_under_check_exits_2_with_line_to_add(self):
+        stderr = StringIO()
+        with mock.patch("sys.stderr", stderr):
+            code = sync.main(["--check", "--kit", str(self.kit)])
+        self.assertEqual(code, 2, "missing plugins.local.json entry under --check exits 2")
+        self.assertIn('"test-agent":', stderr.getvalue(), "stderr prints the exact line to add to plugins.local.json")
+
+    def test_folder_with_other_origin_is_refused(self):
+        other = self.root / "other"
+        init_git_repo(other, "https://github.com/example/wrong-repo.git")
+        (self.kit / "plugins.local.json").write_text(
+            json.dumps({"test-agent": str(other)}), encoding="utf-8"
+        )
+        stderr = StringIO()
+        with mock.patch("sys.stderr", stderr):
+            code = sync.main(["--kit", str(self.kit)])
+        self.assertEqual(code, 2, "a folder whose origin is another repository exits 2")
+        err = stderr.getvalue()
+        self.assertIn(str(other), err, "refusal names the folder")
+        self.assertIn("wrong-repo", err, "refusal names the origin it found")
+        self.assertIn("example/my-plugin", err, "refusal names the repository it wanted")
+
+    def test_saved_entry_is_used_with_no_question(self):
+        (self.kit / "plugins.local.json").write_text(
+            json.dumps({"test-agent": "../plugin"}), encoding="utf-8"
+        )
+        with mock.patch("builtins.input", side_effect=AssertionError("must not ask")):
+            code = sync.main(["--kit", str(self.kit)])
+        self.assertEqual(code, 0, "a saved plugins.local.json entry syncs without asking")
+        self.assertTrue((self.repo / "KIT_VERSION").is_file(), "sync wrote into the saved folder")
+
+    def test_plugin_flag_overrides_for_one_run_without_saving(self):
+        code = sync.main(["--kit", str(self.kit), "--plugin", f"test-agent={self.repo}"])
+        self.assertEqual(code, 0, "--plugin overrides the vendor path for one run")
+        self.assertFalse((self.kit / "plugins.local.json").exists(), "--plugin saves nothing to plugins.local.json")
+        self.assertTrue((self.repo / "KIT_VERSION").is_file(), "--plugin wrote into the overridden folder")
+
+    def test_sibling_named_like_repository_is_offered_as_default(self):
+        sibling = self.root / "my-plugin"
+        init_git_repo(sibling, "git@github.com:Example/My-Plugin")
+        (sibling / "manifest.json").write_text('{\n  "name": "t",\n  "version": "0.0.0"\n}\n', encoding="utf-8")
+        stdout = StringIO()
+        with (
+            mock.patch("sys.stdin.isatty", return_value=True),
+            mock.patch("sys.stdout", stdout),
+            mock.patch("builtins.input", return_value="") as mocked_input,
+        ):
+            code = sync.main(["--kit", str(self.kit)])
+        self.assertEqual(code, 0, "accepting the offered sibling default succeeds")
+        prompt_text = mocked_input.call_args.args[0]
+        self.assertIn("[../my-plugin]", prompt_text, "the sibling named like the repository is the offered default")
+        saved = json.loads((self.kit / "plugins.local.json").read_text(encoding="utf-8"))
+        self.assertEqual(saved["test-agent"], "../my-plugin", "the accepted default is saved to plugins.local.json")
 
 
 if __name__ == "__main__":
