@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "opovi.json",
+  "description": "The file at the root of a world's folder on the person's PC. Opowi writes it when the person saves the world's harness from the Agent connection panel; every fetch command reads it before any call. A newer Opowi may add fields, and a command ignores a field it does not know.",
+  "type": "object",
+  "required": ["serverUrl", "worldId", "vendor", "harnessVersion", "skills"],
+  "properties": {
+    "serverUrl": {
+      "description": "The address of the Opowi install the world lives on, with no trailing slash.",
+      "type": "string",
+      "pattern": "^https?://[^/]+(/.*[^/])?$"
+    },
+    "worldId": {
+      "description": "The world's id: a lowercase UUID version 7.",
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "vendor": {
+      "description": "The agent the folder was saved for, which decides where its skills sit: .claude/skills for claude-code, .agents/skills for codex and antigravity.",
+      "enum": ["claude-code", "codex", "antigravity"]
+    },
+    "harnessVersion": {
+      "description": "The number of the world's harness version the folder holds, 0 for a world with none. claim takes it, and refuses a version that is not the world's current one with ai-handoff.harness-stale.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "skills": {
+      "description": "The names of the skills the folder holds, each a folder under the vendor's skills directory with a SKILL.md.",
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": true
+}
