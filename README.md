@@ -5,7 +5,17 @@ installed plugin must stand alone: Claude Code, Codex and Antigravity install a 
 it.
 
 Status: built for Claude Code, Codex and Antigravity (`vendors/claude-code.json`, `vendors/codex.json`,
-`vendors/antigravity.json`, kit 0.2.0). Not yet tried against a live Opowi server.
+`vendors/antigravity.json`), kit 0.3.0. Not yet tried against a live Opowi server.
+
+| Repository | Holds |
+|---|---|
+| https://github.com/Riztazz/opovi-plugin-shared | this kit |
+| https://github.com/Riztazz/opovi-claude | the Claude Code plugin |
+| https://github.com/Riztazz/opovi-codex | the Codex plugin |
+| https://github.com/Riztazz/opovi-antigravity | the Antigravity plugin |
+
+The local folders sit side by side as `opovi-agent-kit`, `opovi-claude-code`, `opovi-codex` and `opovi-antigravity`,
+the names the vendor files' `repository` field reads.
 
 ## What the plugins do
 
@@ -118,6 +128,23 @@ The folder holds markdown and JSON only. Nothing in it runs.
   `ai-handoff.kit-outdated`, whose text names the repository to update from.
 - **A refusal is text.** The agent reads `<code>: <message> <fix>` and no details object, so every link a command
   shows is in that text.
+
+## Releasing a version
+
+The four repositories share one version, `VERSION` here, and each release is a tag `v<version>` in all four. Opowi's
+server tells a person once per version that a newer plugin is out, so a change that reaches no plugin's files needs no
+release.
+
+1. Change the kit, run `py -3 sync.py`, then `py -3 sync.py --check` and the tests. Both clean.
+2. Raise `VERSION` (semver, below 1.0): the patch for wording an agent reads, the minor for a change in what a command
+   sends or reads, a new field or tool among them. Run `py -3 sync.py` again: it writes `KIT_VERSION` and each
+   manifest's version.
+3. Commit in each of the four repositories, one commit per change, a short subject and no body.
+4. Tag `v<version>` in all four and push the commits and the tag: `git push origin main --tags`.
+5. In Opowi, in the same wave: `DEFAULT_KIT_CONFIG.latest` in `packages/plugins/ai-handoff/src/policy/inbox-policy.ts`
+   moves to the new version, and so does `latest` in the hosted server's `<STUDIO_DATA>/plugins/ai-handoff/opovi-kit.json`,
+   which the server reads again within 5 s, with no restart. A release an older plugin cannot work with also moves
+   `KIT_VERSION_FLOOR`, which refuses the older plugins with `ai-handoff.kit-outdated`.
 
 ## Rules
 
