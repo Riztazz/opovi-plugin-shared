@@ -42,6 +42,7 @@ object: every value a command shows, a link among them, is written into that tex
 |---|---|---|---|
 | `ai-handoff.harness-stale` | the command | the folder's version, the world's version, the address and place of the Agent connection panel | shows them, tells the person to save the harness again, claims nothing more. The issue stays open |
 | `ai-handoff.kit-outdated` | the command | the lowest kit version the server takes, the repository to update from | shows them and the vendor's update steps. Checked before the harness version |
+| `ai-handoff.kit-missing` | the command | that the call sent no `kitVersion`, or a string that is not a version number, and the repository to update from | sends the plugin's own version as `kitVersion` and runs again; when the command cannot name it, shows the text and the vendor's update steps. A `kitVersion` that is not a string, or a string over 64 characters, answers `wire.invalid` before this check |
 | `ai-handoff.token-invalid`, `token-expired`, `token-banned`, `route-is-api` | the command | what is wrong with the sign-in | tells the person to make a new token and set it in the plugin |
 | `ai-handoff.forbidden`, `ai-handoff.ai-off` | the command | the world it refused | shows the text |
 | no `ai-handoff.` code, or no tool | the command | | says the server did not answer and names `opovi.json`'s `serverUrl` |
