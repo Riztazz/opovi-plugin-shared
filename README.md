@@ -145,7 +145,7 @@ The folder holds markdown and JSON only. Nothing in it runs.
   `ai-handoff.harness-stale`, whose text names the Agent connection panel. The command shows it and stops.
 - **The plugin check.** `claim` takes `kitVersion`, and the server refuses a plugin under its floor with
   `ai-handoff.kit-outdated`, whose text names the repository to update from. A call with no `kitVersion`, or a string
-  that is not a version number, is refused `ai-handoff.kit-missing`, and the command sends its version and runs again.
+  that is not a version number, is refused `ai-handoff.kit-missing`, and the command sends its version once and a second refusal ends it.
 - **A refusal is text.** The agent reads `<code>: <message> <fix>` and no details object, so every link a command
   shows is in that text.
 

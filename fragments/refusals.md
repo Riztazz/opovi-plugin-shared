@@ -12,8 +12,9 @@ These refusals end the whole command. Claim nothing more, and end the turn:
 - `ai-handoff.kit-outdated`: this plugin is older than the Opovi server takes. Show the lowest version the text names
   and the repository it names, and tell the person to {{update}}.
 - `ai-handoff.kit-missing`: the call sent no `kitVersion`, or a string that is not a version number such as `0.3.2`.
-  Send this plugin's version as `kitVersion` and run the command again. If the command cannot name that version, show
-  the text and the repository it names, and tell the person to {{update}}.
+  Send this plugin's version as `kitVersion` and run the call once more. A second `ai-handoff.kit-missing` ends the
+  command, and so does a command that cannot name that version: show the text and the repository it names, and tell
+  the person to {{update}}.
 - `ai-handoff.token-invalid`, `ai-handoff.token-expired`, `ai-handoff.token-banned`, `ai-handoff.route-is-api`: the
   agent's sign-in does not work. Show the text, and tell the person to make a new agent token in Opovi, under
   Settings, You, Agent connection, then {{configure}}.

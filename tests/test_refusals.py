@@ -33,6 +33,23 @@ class EveryCommandEndingRefusalIsNamed(unittest.TestCase):
         self.assertIn("kitVersion", line, "the kit-missing step names the kitVersion argument")
         self.assertIn("{{update}}", line, "the kit-missing step ends on the vendor's update steps")
 
+    def test_kit_missing_is_resent_once_and_a_second_one_ends_the_command(self):
+        fragment = (KIT / "fragments" / "refusals.md").read_text(encoding="utf-8")
+        line = fragment[fragment.index("- `ai-handoff.kit-missing`:") :].split("\n- ")[0]
+        flat = " ".join(line.split())
+        self.assertIn("run the call once more", flat, "the kit-missing step allows one resend")
+        self.assertIn("A second `ai-handoff.kit-missing` ends the command", flat, "a second one ends the command")
+
+    def test_the_contract_row_for_kit_missing_allows_one_resend_and_a_second_ends_the_command(self):
+        contract = (KIT / "contract.md").read_text(encoding="utf-8")
+        row = contract[contract.index("| `ai-handoff.kit-missing` |") :].split("\n")[0]
+        self.assertIn("once", row, "the contract row sends the version once")
+        self.assertIn("a second `ai-handoff.kit-missing` ends the command", row, "the row ends on a second refusal")
+
+    def test_the_readme_says_the_command_sends_its_version_once(self):
+        readme = " ".join((KIT / "README.md").read_text(encoding="utf-8").split())
+        self.assertIn("sends its version once and a second refusal ends it", readme, "the README states the limit")
+
     def test_every_vendors_command_carries_the_kit_missing_step_once_rendered(self):
         for name in ("claude-code", "codex", "antigravity"):
             vendor = sync.load_vendor(KIT, name)
