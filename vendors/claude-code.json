@@ -1,0 +1,27 @@
+{
+  "vendor": "claude-code",
+  "agent": "Claude Code",
+  "repository": "../opovi-claude-code",
+  "skillsDir": ".claude/skills",
+  "commandFile": "commands/{name}.md",
+  "commandName": "/opovi:{name}",
+  "toolMention": "`mcp__plugin_opovi_opovi__{tool}`",
+  "toolGrant": "mcp__plugin_opovi_opovi__{tool}",
+  "toolSeparator": " ",
+  "arguments": "$ARGUMENTS",
+  "configure": "run `/plugin configure opovi@opovi` in Claude Code and paste the new token",
+  "update": "run `claude plugin marketplace update opovi`, then `claude plugin update opovi@opovi`, and start Claude Code again",
+  "frontmatter": [
+    { "key": "description", "value": "{description}", "quoted": true },
+    { "key": "argument-hint", "value": "{argument-hint}", "quoted": true },
+    { "key": "allowed-tools", "value": "{tools}", "quoted": false },
+    {
+      "key": "disallowed-tools",
+      "value": "Bash PowerShell Write Edit NotebookEdit WebFetch WebSearch",
+      "quoted": false
+    },
+    { "key": "disable-model-invocation", "value": "true", "quoted": false }
+  ],
+  "versionFile": "KIT_VERSION",
+  "manifest": { "path": ".claude-plugin/plugin.json", "versionKey": "version" }
+}

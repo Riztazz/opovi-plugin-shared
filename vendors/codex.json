@@ -1,0 +1,20 @@
+{
+  "vendor": "codex",
+  "agent": "Codex",
+  "repository": "../opovi-codex",
+  "skillsDir": ".agents/skills",
+  "commandFile": "skills/{name}/SKILL.md",
+  "commandName": "${name}",
+  "toolMention": "`{tool}`",
+  "toolGrant": "{tool}",
+  "toolSeparator": ", ",
+  "arguments": "the text after $fetch-single in the person's message",
+  "configure": "set `OPOVI_TOKEN` in your environment, check `[mcp_servers.opovi]` in `~/.codex/config.toml`, and start Codex again",
+  "update": "pull the latest `opovi-codex` repository and start Codex again",
+  "frontmatter": [
+    { "key": "name", "value": "{name}", "quoted": false },
+    { "key": "description", "value": "{description}", "quoted": true }
+  ],
+  "versionFile": "KIT_VERSION",
+  "manifest": { "path": ".codex-plugin/plugin.json", "versionKey": "version" }
+}
