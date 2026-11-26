@@ -1,9 +1,9 @@
 ---
-description: Serve one open Opowi issue of this world, named by id or list number, or else the oldest
+description: Serve one open Opovi issue of this world, named by id or list number, or else the oldest
 argument-hint: [id or number]
 tools: list_issues claim read_project submit_proposal
 ---
-# Opowi: serve one issue
+# Opovi: serve one issue
 
 Serve one open issue of this folder's world with one proposal, then end the turn.
 

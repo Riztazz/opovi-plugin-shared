@@ -1,12 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "opovi.json",
-  "description": "The file at the root of a world's folder on the person's PC. Opowi writes it when the person saves the world's harness from the Agent connection panel; every fetch command reads it before any call. A newer Opowi may add fields, and a command ignores a field it does not know.",
+  "description": "The file at the root of a world's folder on the person's PC. Opovi writes it when the person saves the world's harness from the Agent connection panel; every fetch command reads it before any call. A newer Opovi may add fields, and a command ignores a field it does not know.",
   "type": "object",
   "required": ["serverUrl", "worldId", "vendor", "harnessVersion", "skills"],
   "properties": {
     "serverUrl": {
-      "description": "The address of the Opowi install the world lives on, with no trailing slash.",
+      "description": "The address of the Opovi install the world lives on, with no trailing slash.",
       "type": "string",
       "pattern": "^https?://[^/]+(/.*[^/])?$"
     },

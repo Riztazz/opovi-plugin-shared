@@ -24,4 +24,4 @@ order.
 7. **A refused answer.** When the refusal's fix says the turn ended, send nothing more for this issue. Otherwise
    correct what the refusal names and send again, at most twice; after that, report the issue as refused.
 8. **Report it** in one line: the issue's label, the proposal id and its status, and the ids of any decision cards,
-   or the refusal's code. The proposal waits in Opowi for the person to accept it.
+   or the refusal's code. The proposal waits in Opovi for the person to accept it.

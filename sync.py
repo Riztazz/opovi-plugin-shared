@@ -24,8 +24,8 @@ LOCAL_CONFIG = "plugins.local.json"
 GITHUB_HTTPS_RE = re.compile(r"^https?://(?:[^/@]+@)?github\.com/([^/]+/[^/]+?)(?:\.git)?/?$", re.IGNORECASE)
 GITHUB_SSH_RE = re.compile(r"^(?:git@github\.com:|ssh://git@github\.com/)([^/]+/[^/]+?)(?:\.git)?/?$", re.IGNORECASE)
 
-# The only tools a command may name or pre-allow, all on the Opowi server (contract.md).
-OPOWI_TOOLS = ("list_issues", "claim", "read_project", "submit_proposal")
+# The only tools a command may name or pre-allow, all on the Opovi server (contract.md).
+OPOVI_TOOLS = ("list_issues", "claim", "read_project", "submit_proposal")
 
 PLACEHOLDER = re.compile(r"\{\{([a-z_]+)(?::([a-z0-9_-]+))?\}\}")
 MAX_INCLUDE_DEPTH = 4
@@ -183,9 +183,9 @@ def read_command(path: Path) -> tuple[dict[str, str], str]:
     if not fields.get("description"):
         raise SyncError(f"{path.name} has no description")
     tools = fields.get("tools", "").split()
-    unknown = [tool for tool in tools if tool not in OPOWI_TOOLS]
+    unknown = [tool for tool in tools if tool not in OPOVI_TOOLS]
     if unknown:
-        raise SyncError(f"{path.name} names tools outside the four Opowi tools: {', '.join(unknown)}")
+        raise SyncError(f"{path.name} names tools outside the four Opovi tools: {', '.join(unknown)}")
     return fields, text[match.end():]
 
 

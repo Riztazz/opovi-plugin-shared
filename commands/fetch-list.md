@@ -1,8 +1,8 @@
 ---
-description: List this world's open Opowi issues, numbered, and serve none
+description: List this world's open Opovi issues, numbered, and serve none
 tools: list_issues
 ---
-# Opowi: list the open issues
+# Opovi: list the open issues
 
 Show the person's open issues of this folder's world, numbered, and serve none of them.
 

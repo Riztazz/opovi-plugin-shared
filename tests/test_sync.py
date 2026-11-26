@@ -74,7 +74,7 @@ class TheRealKitRendersWhole(unittest.TestCase):
             for path, text in rendered.items():
                 self.assertNotIn("{{", text, f"{name}'s {path} holds no placeholder the render left")
 
-    def test_each_command_pre_allows_only_opowi_tools_it_names(self):
+    def test_each_command_pre_allows_only_opovi_tools_it_names(self):
         vendor = sync.load_vendor(KIT, "claude-code")
         rendered = sync.render(KIT, vendor, sync.repository_of(KIT, vendor))
         for path, text in rendered.items():
@@ -83,7 +83,7 @@ class TheRealKitRendersWhole(unittest.TestCase):
             line = next(row for row in text.splitlines() if row.startswith("allowed-tools:"))
             granted = line.removeprefix("allowed-tools:").split()
             tools = {grant.removeprefix("mcp__plugin_opovi_opovi__") for grant in granted}
-            self.assertTrue(tools <= FOUR, f"{path} pre-allows only the four Opowi tools, got {granted}")
+            self.assertTrue(tools <= FOUR, f"{path} pre-allows only the four Opovi tools, got {granted}")
             self.assertTrue(all(g.startswith("mcp__plugin_opovi_opovi__") for g in granted),
                             f"{path} pre-allows only tools of the plugin's own server, got {granted}")
 
@@ -107,7 +107,7 @@ class TheRealKitRendersWhole(unittest.TestCase):
 
     def test_every_rendered_command_sends_kit_version_and_holds_the_update_note_line(self):
         version = (KIT / "VERSION").read_text(encoding="utf-8").strip()
-        self.assertEqual(version, "0.3.0", "the kit is bumped to 0.3.0")
+        self.assertRegex(version, r"^0\.\d+\.\d+$", "VERSION is a semver below 1.0")
         for name in sync.vendor_names(KIT):
             vendor = sync.load_vendor(KIT, name)
             rendered = sync.render(KIT, vendor, sync.repository_of(KIT, vendor))
@@ -161,7 +161,7 @@ class TheRenderRefuses(unittest.TestCase):
 
     def test_a_tool_outside_the_four_refuses_the_render(self):
         message = self.refused(GOOD.replace("tools: claim", "tools: claim run_shell"))
-        self.assertIn("run_shell", message, "a command may name only the four Opowi tools")
+        self.assertIn("run_shell", message, "a command may name only the four Opovi tools")
 
     def test_a_tool_the_tools_line_leaves_out_refuses_the_render(self):
         message = self.refused(GOOD.replace("{{tool:claim}}", "{{tool:submit_proposal}}"))

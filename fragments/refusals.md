@@ -6,19 +6,19 @@ do. Tell the person both in a sentence or two, and copy every address in it whol
 These refusals end the whole command. Claim nothing more, and end the turn:
 
 - `ai-handoff.harness-stale`: this folder's harness is not the one the world runs now. The text names the folder's
-  version, the world's version, and the address and place of the Agent connection panel in Opowi. Show those, and
+  version, the world's version, and the address and place of the Agent connection panel in Opovi. Show those, and
   tell the person to save the harness from that panel into this folder again, then run the command again. Nothing was
   claimed, and the issue stays open.
-- `ai-handoff.kit-outdated`: this plugin is older than the Opowi server takes. Show the lowest version the text names
+- `ai-handoff.kit-outdated`: this plugin is older than the Opovi server takes. Show the lowest version the text names
   and the repository it names, and tell the person to {{update}}.
 - `ai-handoff.token-invalid`, `ai-handoff.token-expired`, `ai-handoff.token-banned`, `ai-handoff.route-is-api`: the
-  agent's sign-in does not work. Show the text, and tell the person to make a new agent token in Opowi, under
+  agent's sign-in does not work. Show the text, and tell the person to make a new agent token in Opovi, under
   Settings, You, Agent connection, then {{configure}}.
 - `ai-handoff.forbidden`, `ai-handoff.ai-off`: the person may not run AI issues in this world, or its AI is off.
   Show the text.
-- A call that fails with no `ai-handoff.` code, or a tool that is not there: the Opowi server did not answer. Say so,
+- A call that fails with no `ai-handoff.` code, or a tool that is not there: the Opovi server did not answer. Say so,
   name the server address in `opovi.json`, and tell the person to check that the plugin's server address names the
-  same Opowi install ({{configure}}).
+  same Opovi install: {{configure}}.
 
 These refusals are about one issue alone. The issue is left as the text says, and a command that serves several
 goes on with the next one:

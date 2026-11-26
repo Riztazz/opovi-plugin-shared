@@ -9,7 +9,7 @@
   "toolGrant": "{tool}",
   "toolSeparator": " ",
   "arguments": "<the text after the command name in the person's message; empty when there is none>",
-  "configure": "open Customizations, then Installed, open the Opowi plugin's setup dialog and paste the new token",
+  "configure": "open Customizations, then Installed, open the Opovi plugin's setup dialog and paste the new token",
   "update": "install the newer opovi-antigravity over this one with `agy plugin uninstall opovi` and `agy plugin install`, then start a new conversation",
   "frontmatter": [
     { "key": "name", "value": "opovi-{name}", "quoted": false },

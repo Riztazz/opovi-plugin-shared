@@ -1,15 +1,15 @@
-# The contract between the plugins and the Opowi server
+# The contract between the plugins and the Opovi server
 
 What every plugin built from this kit sends, what it reads back, and every refusal a command handles. The server side
-lives in Opowi's `ai-handoff` plugin (`packages/plugins/ai-handoff/src/server/mechanism/inbox/mcp-tools.ts`). A change
+lives in Opovi's `ai-handoff` plugin (`packages/plugins/ai-handoff/src/server/mechanism/inbox/mcp-tools.ts`). A change
 on either side changes this file first.
 
 ## The endpoint and the sign-in
 
-- **MCP over streamable HTTP** at `<server>/api/plugins/ai-handoff/mcp`, where `<server>` is the Opowi install's
+- **MCP over streamable HTTP** at `<server>/api/plugins/ai-handoff/mcp`, where `<server>` is the Opovi install's
   address with no trailing slash. `POST` only: the server answers JSON, offers no event stream on `GET` and holds no
   session to end on `DELETE`.
-- **`Authorization: Bearer <agent token>`** on every call. A person makes one token per agent in Opowi, under
+- **`Authorization: Bearer <agent token>`** on every call. A person makes one token per agent in Opovi, under
   Settings, You, Agent connection. A token acts for 90 days, and reads and serves only its own person's issues.
 - A plugin keeps the token where its vendor keeps secrets (Claude Code: a `sensitive` user setting). No token is
   ever written into the world folder, a command or this kit.
@@ -25,7 +25,7 @@ A plugin allows these four and no other. None of them touches the PC.
 | `read_project` | `projectId`, `kitVersion`, and `entityIds` for pages whole, or `from` for a page of the index | the index, or the pages with their links; optional `update` once per version per token |
 | `submit_proposal` | `issueId`, `kitVersion`, and the proposal, reasons and decision cards its own description asks for | `proposalId`, `status`, `decisions`, `findings`; optional `update` once per version per token |
 
-Every tool takes `kitVersion` since Opowi #5878 (`claim` requires it; on the other three it is optional on the wire,
+Every tool takes `kitVersion` since Opovi #5878 (`claim` requires it; on the other three it is optional on the wire,
 and below the server's floor any call that sends it is refused `ai-handoff.kit-outdated`). The server reads the
 plugin's vendor from the agent token row, not from a tool argument. Between the floor and the server's latest version,
 the first call on a token carries `update: { running, latest, repository }` once per version, and the command prints
@@ -55,7 +55,7 @@ ended.
 
 ## The world folder
 
-`opovi.json` follows `schema/opovi.schema.json`. Opowi writes it in
+`opovi.json` follows `schema/opovi.schema.json`. Opovi writes it in
 `packages/plugins/ai-handoff/src/web/mechanism/harness/harness-files.ts`, with the skills under the vendor's own
 directory (`.claude/skills` for Claude Code, `.agents/skills` for Codex and Antigravity) and each role at
 `roles/<role id>.md`. The folder holds markdown and JSON only.

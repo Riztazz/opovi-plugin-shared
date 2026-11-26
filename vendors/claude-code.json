@@ -9,7 +9,7 @@
   "toolGrant": "mcp__plugin_opovi_opovi__{tool}",
   "toolSeparator": " ",
   "arguments": "$ARGUMENTS",
-  "configure": "run `/plugin configure opovi@opovi` in Claude Code and paste the new token",
+  "configure": "open the Opovi plugin's settings, which is the plugin page's Settings tab in the desktop app and `echo '{\"token\":\"<new token>\"}' | claude plugin configure opovi@opovi --values-stdin` in a terminal (the other setting is `server_url`), save the value and start Claude Code again",
   "update": "run `claude plugin marketplace update opovi`, then `claude plugin update opovi@opovi`, and start Claude Code again",
   "frontmatter": [
     { "key": "description", "value": "{description}", "quoted": true },

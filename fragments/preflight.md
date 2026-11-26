@@ -4,7 +4,7 @@ Do this before any call.
 
 1. Read `opovi.json` at the root of the folder this session was opened in. Look for it nowhere else.
 2. **No `opovi.json`:** say this, call no tool, and end the turn:
-   "This folder holds no Opowi world. In Opowi, open the world and its Agent connection panel, save the world's
+   "This folder holds no Opovi world. In Opovi, open the world and its Agent connection panel, save the world's
    harness for {{agent}} into a folder of its own, then open {{agent}} in that folder and run this command again."
 3. **Check its fields.** It holds `serverUrl` (an http or https address), `worldId` (a lowercase UUID, 36
    characters with dashes), `vendor`, `harnessVersion` (a whole number, 0 or more) and `skills` (a list of names).

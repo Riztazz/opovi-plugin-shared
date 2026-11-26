@@ -61,7 +61,7 @@ class TheKitRendersSkills(unittest.TestCase):
                 continue
             self.assertIn("`opovi_opovi` MCP server", text, f"{path} says where its tools live")
             named = set(re.findall(r"`([a-z_]+)` on the `opovi_opovi` MCP server", text))
-            self.assertTrue(named and named <= FOUR, f"{path} names only the four Opowi tools, got {named}")
+            self.assertTrue(named and named <= FOUR, f"{path} names only the four Opovi tools, got {named}")
 
     def test_the_skills_read_world_skills_from_the_agents_folder(self):
         text = self.made["skills/opovi-fetch-single/SKILL.md"]
@@ -101,7 +101,7 @@ class TheShippedPluginIsSound(unittest.TestCase):
         self.assertRegex(manifest["name"], r"^[a-z0-9]+(-[a-z0-9]+)*$")
         self.assertEqual(manifest["name"], "opovi", "the MCP namespace opovi_opovi in the skills follows from this name")
 
-    def test_the_mcp_server_signs_in_with_the_token_variable_over_the_opowi_endpoint(self):
+    def test_the_mcp_server_signs_in_with_the_token_variable_over_the_opovi_endpoint(self):
         server = self.read_json("mcp_config.json")["mcpServers"]["opovi"]
         self.assertEqual(server["serverUrl"], "${OPOVI_SERVER_URL}/api/plugins/ai-handoff/mcp")
         self.assertEqual(server["headers"], {"Authorization": "Bearer ${OPOVI_TOKEN}"})

@@ -1,8 +1,8 @@
 ---
-description: Serve every open Opowi issue of this world, oldest first, one proposal each
+description: Serve every open Opovi issue of this world, oldest first, one proposal each
 tools: list_issues claim read_project submit_proposal
 ---
-# Opowi: serve every open issue
+# Opovi: serve every open issue
 
 Serve every open issue of this folder's world, oldest first, with one proposal each, then end the turn.
 
