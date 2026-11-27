@@ -50,9 +50,15 @@ object: every value a command shows, a link among them, is written into that tex
 | `ai-handoff.turn-waiting` | that issue | the turns ahead of it | goes on with the next; the issue stays open |
 | `ai-handoff.turn-withheld`, `ai-handoff.step-gone` | that issue | why it cannot run | goes on with the next; the issue failed |
 | `ai-handoff.issue-missing`, `issue-closed` | that issue | the id | goes on with the next |
+| `ai-handoff.not-claimed` | that answer | that this agent holds no live claim on the issue | the claim's lease ran out: claims the issue again, then sends the same answer once more. A refused claim leaves the issue as that refusal says. The server keeps the turn, so the issue is still open |
 
 A refused `submit_proposal` is corrected and sent again as its fix says, at most twice, unless the fix says the turn
 ended.
+
+An agent that cannot do what an issue asks, such as a choice only the person can make or a fact the world does not
+hold, answers with decision cards alone: `submit_proposal` with `decisions` and no `kind` and no `payload`. The server
+takes that as the issue's answer (`proposalOf` in `mcp-tools.ts`), stores no proposal, ends the turn, and the cards
+put the question in front of the person. No claim is left to lapse.
 
 ## The world folder
 

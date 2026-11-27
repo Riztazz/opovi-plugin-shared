@@ -19,9 +19,17 @@ order.
    for pages whole (the cited `pages` first), with no `entityIds` for the index of the world's pages. When `waitedFor`
    is above 0, read again every page you are about to change before you propose.
 5. **The step.** When `brief` names a step whose answer is `cards`, the answer carries at least one decision card.
-6. **One answer.** Call {{tool:submit_proposal}} once, with the `issueId`, `kitVersion` set to `"{{kit_version}}"`,
+6. **An ask you cannot do.** When the issue asks for what you cannot do, such as a choice only the person can make,
+   a fact the world does not hold, or work the four Opovi tools cannot reach, guess nothing and leave no claim to
+   lapse. Answer with decision cards alone: {{tool:submit_proposal}} with the decision cards and no proposal kind and
+   no payload, each card asking the person what the work needs. That answers the issue, ends its turn, and puts the
+   question in front of the person.
+7. **One answer.** Call {{tool:submit_proposal}} once, with the `issueId`, `kitVersion` set to `"{{kit_version}}"`,
    and the proposal, the reasons and the decision cards as that tool's description asks. One issue gets one proposal.
-7. **A refused answer.** When the refusal's fix says the turn ended, send nothing more for this issue. Otherwise
-   correct what the refusal names and send again, at most twice; after that, report the issue as refused.
-8. **Report it** in one line: the issue's label, the proposal id and its status, and the ids of any decision cards,
+8. **A refused answer.** When the refusal's fix says the turn ended, send nothing more for this issue. When it is
+   `ai-handoff.not-claimed`, the claim's lease ran out before the answer arrived: call {{tool:claim}} for the issue
+   again, as before, and once it is granted send the same answer once more. A refused claim leaves the issue as that
+   refusal says. Otherwise correct what the refusal names and send again, at most twice; after that, report the issue
+   as refused.
+9. **Report it** in one line: the issue's label, the proposal id and its status, and the ids of any decision cards,
    or the refusal's code. The proposal waits in Opovi for the person to accept it.

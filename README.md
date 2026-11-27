@@ -5,7 +5,7 @@ installed plugin must stand alone: Claude Code, Codex and Antigravity install a 
 it.
 
 Status: built for Claude Code, Codex and Antigravity (`vendors/claude-code.json`, `vendors/codex.json`,
-`vendors/antigravity.json`), kit 0.3.0. Not yet tried against a live Opovi server.
+`vendors/antigravity.json`), at the version `VERSION` names. Not yet tried against a live Opovi server.
 
 | Repository | Holds |
 |---|---|

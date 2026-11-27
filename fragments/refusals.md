@@ -31,5 +31,7 @@ goes on with the next one:
 - `ai-handoff.turn-waiting`: an earlier turn of its conversation has not ended. It stays open.
 - `ai-handoff.turn-withheld`, `ai-handoff.step-gone`: the issue cannot run any more, and it failed.
 - `ai-handoff.issue-missing`, `ai-handoff.issue-closed`: no such issue is open for this person.
+- `ai-handoff.not-claimed`, to an answer sent: the claim's lease ran out before the answer arrived. Claim the issue
+  again, then send the same answer once more. A refused claim leaves the issue as that refusal says.
 
 Any other code: show the text, and treat it as a refusal of that one issue.
